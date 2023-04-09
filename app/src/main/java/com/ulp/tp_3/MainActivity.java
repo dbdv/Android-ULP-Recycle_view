@@ -1,6 +1,7 @@
 package com.ulp.tp_3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,14 +19,8 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
+    private MainActivityVM viewModel;
     private Context context;
-    private ArrayList<Movie> movies = new ArrayList<Movie>(
-            Arrays.asList(
-                    new Movie("Piratas del Caribe", "Piratas en busca de tesoros", "Espen Sandberg", "Johnny Depp", R.drawable.piratas_del_caribe_cover),
-                    new Movie("Buscando a Nemo", "Un pez en busca de su hijo", "Andrew Staton", "Albert Brooks", R.drawable.buscando_a_nemo_cover),
-                    new Movie("John Wick", "Un mercenario retirado que vuelve a la acción", "Chad Stahelski", "Keanu Reaves", R.drawable.john_wick_cover)
-            )
-    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +30,12 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         RecyclerView recyclerView = binding.moviesRecycleView;
 
+        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication()).create(MainActivityVM.class);
+
         GridLayoutManager grid = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(grid);
 
-        MainActivityAdapter adapter = new MainActivityAdapter(context, movies, getLayoutInflater());
+        MainActivityAdapter adapter = new MainActivityAdapter(context, viewModel.getMovies().getValue(), getLayoutInflater());
         recyclerView.setAdapter(adapter);
     }
 }
